@@ -1,4 +1,4 @@
-#neuralnet
+# neuralnet  
 離散時間システムの3層ニューラルネットワークによる同定
 
 
@@ -8,4 +8,4 @@
 *逆方向*  
 <img src="https://latex.codecogs.com/gif.latex?e(k)=u(k-1)-y_{nn}(k)"/>  
 
-重みの更新方法は，いずれも誤差逆伝播法
+重みの更新方法は，いずれも誤差逆伝播法．
