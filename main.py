@@ -28,7 +28,6 @@ class System1:
 		Kp, Ki, Kd = 0.5, 0.1, 0.05
 		return u1+Kp*(e-e1)+Ki*e+Kd*(e-2*e1+e2)
 
-
 	#入力データuと教師データyの取得
 	def make_u_y_data_set(self):
 		u1, u2, y, y1, y2, e1, e2= 0, 0, 0, 0, 0, 0, 0
@@ -52,10 +51,27 @@ class System1:
 			e2 = e1
 			e1 = e
 
-	def make_neuralnet_input_data(self):
-		self.__modified_y_data_set=np.repeat(self.__y_data_set,2)[1:-1].reshape((-1, 2))
+	#順方向の同定での入力ベクトルを作成する
+	def make_neuralnet_forward_input_data(self):
+		self.make_u_y_data_set()
+		self.__modified_y_data_set=np.repeat(self.__y_data_set,2)[:-2].reshape((-1, 2))
 		self.__modified_u_data_set=np.repeat(self.__u_data_set,2)[1:-1].reshape((-1, 2))
 		self.__input_data=np.c_[self.__modified_y_data_set, self.__modified_u_data_set]
+
+	#逆方向の同定での入力ベクトルを作成する
+	def make_neuralnet_backward_input_data(self):
+		self.make_u_y_data_set()
+		y_data_set1=self.__y_data_set
+		y_data_set2=self.__y_data_set[:self.__k-1]
+		y_data_set2=np.insert(y_data_set2, 0, 0)
+		y_data_set3=self.__y_data_set[:self.__k-2]
+		y_data_set3=np.insert(y_data_set3, 0, [0, 0])
+
+		u_data_set=self.__u_data_set[:self.__k-2]
+		u_data_set=np.insert(u_data_set, 0, [0, 0])
+
+		self.__input_backward_data=np.c_[y_data_set1,y_data_set2, y_data_set3, u_data_set]
+
 
 	@property
 	def y_data_set(self):
@@ -77,18 +93,20 @@ class System1:
 	def input_data(self):
 		return self.__input_data
 
+	@property
+	def input_backward_data(self):
+		return self.__input_backward_data
+
 
 if __name__ =="__main__":
-
 	system1=System1(1000)
-	system1.make_u_y_data_set()
-	system1.make_neuralnet_input_data()
-	print(system1.input_data)
-	
-	neuralnet=NeuralNet(4,10)
-	neuralnet.train(system1.y_data_set, system1.input_data,eta=0.2)
+	system1.make_neuralnet_backward_input_data()
 
-	neuralnet.make_graph(system1.y_data_set, neuralnet.y_data_set)
+	neuralnet=NeuralNet(4, 20, system1.input_backward_data, system1.u_data_set)
+	neuralnet.train(eta=0.2)
+
+	neuralnet.make_graph()
+	
 
 
 
