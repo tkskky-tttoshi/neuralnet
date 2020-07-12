@@ -73,6 +73,7 @@ class NeuralNet:
 			#各重みの書き換え
 			self.__hidden_weights=np.delete(self.__hidden_weights,i,0)
 			self.__hidden_weights=np.insert(self.__hidden_weights,i,updated_weight,axis=0)
+		
 			
 
 	def __back_propagation(self,training_data, X, V, eta, error):
@@ -110,12 +111,19 @@ class NeuralNet:
 
 
 	def make_graph(self):
-		x=range(0, 100)
+		x=range(0, 99)
 		y=self.__training_data_set[:100]
 		y_nn=self.__y_nn_data_set[:100]
-		plt.plot(x, y, x, y_nn, label="y")
-		plt.show()
+		# plt.plot(x, y, x, y_nn, label="y")
+		plt.title("Forward / Hidden Layer:20")
+		plt.plot(x,y, label="y")
+		plt.xlabel("k")
+		plt.ylabel("output")
+		plt.plot(x,y_nn, label="y_nn")
+		plt.ylim(-2, 2)
+		plt.legend()
 
+		plt.show()
 
 
 	@property
@@ -124,15 +132,15 @@ class NeuralNet:
 
 
 if __name__=="__main__":
-	neuralnet=NeuralNet(4,5)
+	neuralnet=NeuralNet(4,20)
 			
 	print("START")
 	
-  	X_data_set=np.random.rand(200).reshape(50,4)
-  	training_data_set=np.random.rand(50)
-  	print(X_data_set)
-  	print(training_data_set)
-  	neuralnet.train(training_data_set, X_data_set, eta=0.2)
+	X_data_set=np.random.rand(200).reshape(50,4)
+	training_data_set=np.random.rand(50)
+	print(X_data_set)
+	print(training_data_set)
+	neuralnet.train(training_data_set, X_data_set, eta=0.2)
 
 
 
