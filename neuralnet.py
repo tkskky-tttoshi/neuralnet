@@ -132,16 +132,7 @@ class NeuralNet:
 
 
 if __name__=="__main__":
-	neuralnet=NeuralNet(4,20)
-			
-	print("START")
 	
-	X_data_set=np.random.rand(200).reshape(50,4)
-	training_data_set=np.random.rand(50)
-	print(X_data_set)
-	print(training_data_set)
-	neuralnet.train(training_data_set, X_data_set, eta=0.2)
-
 
 
 
